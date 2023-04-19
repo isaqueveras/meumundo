@@ -1,4 +1,4 @@
-CREATE DATABASE IF NOT EXISTS `article` /*!40100 DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci */;
+CREATE DATABASE IF NOT EXISTS `nossobr` /*!40100 DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci */;
 USE `article`;
 -- MySQL dump 10.13  Distrib 5.7.17, for macos10.12 (x86_64)
 --
