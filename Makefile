@@ -61,7 +61,7 @@ build: ## Builds binary
 	@ go build \
 		-trimpath  \
 		-o engine \
-		./app/
+		./
 	@ echo "done"
 
 
