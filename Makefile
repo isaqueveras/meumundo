@@ -1,9 +1,3 @@
-# Database
-MONGO_INITDB_ROOT_USERNAME ?= admin
-MONGO_INITDB_ROOT_PASSWORD ?= admin
-MYSQL_ADDRESS ?= 127.0.0.1:3306
-MONGODB_DATABASE ?= nossobr
-
 # Exporting bin folder to the path for makefile
 export PATH   := $(PWD)/bin:$(PATH)
 # Default Shell
@@ -28,7 +22,7 @@ deps:
 	@echo "Required Tools Are Available"
 
 dev-env: ## Bootstrap Environment (with a docker compose help).
-	@ docker compose up -d --build mongodb
+	@ docker compose up -d --build postgesql
 
 dev-env-test: dev-env ## Run application (within a docker compose help)
 	@ $(MAKE) image-build
@@ -58,7 +52,7 @@ build: ## Builds binary
 	@ go build \
 		-trimpath  \
 		-o engine \
-		./
+		./app
 	@ echo "done"
 
 
@@ -132,7 +126,6 @@ clean-artifacts: ## Removes Artifacts (*.out)
 	@printf "Cleanning artifacts... "
 	@rm -f *.out
 	@echo "done."
-
 
 clean-docker: ## Removes dangling docker images
 	@ docker image prune -f

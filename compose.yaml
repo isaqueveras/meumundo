@@ -1,28 +1,29 @@
 version: "3.8"
 
 services:
-  web:
+  api:
     image: nossobr
     container_name: nossobr_api
     ports:
       - 9090:9090
     depends_on:
-      mongodb:
+      postgesql:
         condition: service_healthy
     volumes:
       - ./config.json:/app/config.json
 
-  mongodb:
-    image: mongo:latest
+  postgesql:
+    image: 'postgres:14.1-alpine'
+    container_name: nossobr_postgesql
+    ports:
+      - "5432:5432"
     restart: always
     environment:
-      MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: admin
-      MONGODB_DATABASE: nossobr
-    ports:
-      - 27017:27017
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=nossobr
     volumes:
-      - mongodb_data_container:/data/db
+      - postgres_data:/data/postgres
 
 volumes:
-  mongodb_data_container:
+  postgres_data:

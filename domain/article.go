@@ -2,6 +2,12 @@ package domain
 
 import "time"
 
+// ArticleUsecase represent the article's usecases
+type ArticleUsecase interface{}
+
+// IArticle represent the article's repository contract
+type IArticle interface{}
+
 // Article is representing the Article data struct
 type Article struct {
 	ID        int64     `json:"id"`
@@ -11,9 +17,3 @@ type Article struct {
 	UpdatedAt time.Time `json:"updated_at"`
 	CreatedAt time.Time `json:"created_at"`
 }
-
-// ArticleUsecase represent the article's usecases
-type ArticleUsecase interface{}
-
-// ArticleRepository represent the article's repository contract
-type ArticleRepository interface{}

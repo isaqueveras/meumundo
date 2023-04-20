@@ -11,10 +11,10 @@ import (
 
 	"nossobr/article/delivery/http"
 	"nossobr/article/delivery/http/middleware"
-	articleRepo "nossobr/article/repository/mongo"
+	repoArticle "nossobr/article/repository"
 	articleUsecase "nossobr/article/usecase"
-	authorRepo "nossobr/author/repository/mongo"
-	"nossobr/pkg/mongodb"
+	repoAuthor "nossobr/author/repository"
+	"nossobr/database"
 )
 
 func init() {
@@ -29,29 +29,29 @@ func init() {
 }
 
 func main() {
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
+
 	e := echo.New()
 	e.Use(middleware.InitMiddleware().CORS)
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	mongoConn, err := mongodb.NewMongoDBConn(ctx)
+	if err := database.OpenConnections(); err != nil {
+		log.Fatal("Unable to open connections to database: ", err)
+	}
+	defer database.CloseConnections()
+
+	tx, err := database.NewTransaction(ctx, false)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	defer func() {
-		if err = mongoConn.Disconnect(ctx); err != nil {
-			log.Fatal(err)
-		}
-	}()
-
-	authorRepo := authorRepo.NewMongoAuthorRepository(mongoConn)
-	ar := articleRepo.NewMongoArticleRepository(mongoConn)
-	timeoutContext := time.Duration(viper.GetInt("context.timeout")) * time.Second
-
-	au := articleUsecase.NewArticleUsecase(ar, authorRepo, timeoutContext)
-	http.NewArticleHandler(e, au)
+	http.NewArticleHandler(e, articleUsecase.NewArticleUsecase(
+		repoArticle.New(tx),
+		repoAuthor.New(tx),
+		time.Second*2,
+	))
 
 	log.Fatal(e.Start(viper.GetString("server.address"))) //nolint
 }
