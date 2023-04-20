@@ -22,8 +22,8 @@ up: dev-env             				## Startup / Spinup Docker Compose
 down: docker-stop               ## Stop Docker
 destroy: docker-teardown clean  ## Teardown (removes volumes, tmp files, etc...)
 
-install-deps: migrate air gotestsum tparse mockery ## Install Development Dependencies (localy).
-deps: $(MIGRATE) $(AIR) $(GOTESTSUM) $(TPARSE) $(MOCKERY) ## Checks for Global Development Dependencies.
+install-deps: migrate gotestsum tparse mockery ## Install Development Dependencies (localy).
+deps: $(MIGRATE) $(GOTESTSUM) $(TPARSE) $(MOCKERY) ## Checks for Global Development Dependencies.
 deps:
 	@echo "Required Tools Are Available"
 
@@ -33,9 +33,6 @@ dev-env: ## Bootstrap Environment (with a docker compose help).
 dev-env-test: dev-env ## Run application (within a docker compose help)
 	@ $(MAKE) image-build
 	docker compose up web
-
-dev-air: $(AIR) ## Starts AIR ( Continuous Development app).
-	air
 
 docker-stop:
 	@ docker compose down
