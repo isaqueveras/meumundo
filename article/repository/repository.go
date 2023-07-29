@@ -1,16 +1,20 @@
 package repository
 
 import (
+	"context"
+	"database/sql"
 	"nossobr/article/repository/postgres"
-	"nossobr/database"
 	"nossobr/domain"
 )
 
-type repo struct {
+type repository struct {
 	pg *postgres.PGArticle
 }
 
-// New will create an object that represent the article.Repository interface
-func New(tx *database.DBTransaction) domain.IArticle {
-	return &repo{pg: &postgres.PGArticle{DB: tx}}
+func NewRepo(conn *sql.DB) domain.IArticle {
+	return &repository{pg: &postgres.PGArticle{DB: conn}}
+}
+
+func (r *repository) Get(ctx context.Context, articleID *string) error {
+	return r.pg.Get(ctx, articleID)
 }

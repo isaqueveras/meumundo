@@ -1,15 +1,13 @@
 package http
 
 import (
+	"net/http"
+
 	"github.com/labstack/echo"
 
 	"nossobr/domain"
+	"nossobr/utils"
 )
-
-// responseError represent the response error struct
-// type responseError struct {
-// 	Message string `json:"message"`
-// }
 
 // ArticleHandler  represent the httphandler for article
 type ArticleHandler struct {
@@ -17,32 +15,15 @@ type ArticleHandler struct {
 }
 
 // NewArticleHandler will initialize the articles/ resources endpoint
-func NewArticleHandler(_ *echo.Echo, us domain.ArticleUsecase) {
-	_ = &ArticleHandler{ArticleUsecase: us}
+func NewArticleHandler(e *echo.Echo, us domain.ArticleUsecase) {
+	handler := &ArticleHandler{ArticleUsecase: us}
+
+	e.GET("/get", handler.Get)
 }
 
-// func isRequestValid(m *domain.Article) (bool, error) {
-// 	validate := validator.New()
-// 	if err := validate.Struct(m); err != nil {
-// 		return false, err
-// 	}
-// 	return true, nil
-// }
-
-// func getStatusCode(err error) int {
-// 	if err == nil {
-// 		return http.StatusOK
-// 	}
-
-// 	logrus.Error(err)
-// 	switch err {
-// 	case domain.ErrInternalServerError:
-// 		return http.StatusInternalServerError
-// 	case domain.ErrNotFound:
-// 		return http.StatusNotFound
-// 	case domain.ErrConflict:
-// 		return http.StatusConflict
-// 	default:
-// 		return http.StatusInternalServerError
-// 	}
-// }
+func (a *ArticleHandler) Get(c echo.Context) error {
+	if err := a.ArticleUsecase.Get(c.Request().Context(), utils.Pointer(c.Param("article_id"))); err != nil {
+		return c.JSON(http.StatusCreated, utils.ResponseError{Message: err.Error()})
+	}
+	return nil
+}

@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"context"
 	"time"
 
 	"nossobr/domain"
@@ -8,11 +9,20 @@ import (
 
 type articleUsecase struct {
 	articleRepo    domain.IArticle
-	authorRepo     domain.IAuthor
 	contextTimeout time.Duration
 }
 
-// NewArticleUsecase will create new an articleUsecase object representation of domain.ArticleUsecase interface
-func NewArticleUsecase(a domain.IArticle, ar domain.IAuthor, timeout time.Duration) domain.ArticleUsecase {
-	return &articleUsecase{articleRepo: a, authorRepo: ar, contextTimeout: timeout}
+func NewArticleUsecase(a domain.IArticle, timeout time.Duration) domain.ArticleUsecase {
+	return &articleUsecase{articleRepo: a, contextTimeout: timeout}
+}
+
+func (a *articleUsecase) Get(ctx context.Context, articleID *string) error {
+	ctx, cancel := context.WithTimeout(ctx, a.contextTimeout)
+	defer cancel()
+
+	if err := a.articleRepo.Get(ctx, articleID); err != nil {
+		return err
+	}
+
+	return nil
 }
