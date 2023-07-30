@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"log"
 	"time"
 
@@ -11,9 +10,8 @@ import (
 
 	"nossobr/article/delivery/http"
 	"nossobr/article/delivery/http/middleware"
-	repoArticle "nossobr/article/repository"
-	articleUsecase "nossobr/article/usecase"
-	repoAuthor "nossobr/author/repository"
+	"nossobr/article/repository"
+	"nossobr/article/usecase"
 	"nossobr/database"
 )
 
@@ -31,27 +29,20 @@ func init() {
 func main() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 
-	e := echo.New()
-	e.Use(middleware.InitMiddleware().CORS)
+	router := echo.New()
+	router.Use(middleware.InitMiddleware().CORS)
 
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-
-	if err := database.OpenConnections(); err != nil {
+	db, err := database.OpenConnection()
+	if err != nil {
 		log.Fatal("Unable to open connections to database: ", err)
 	}
-	defer database.CloseConnections()
+	defer db.Close()
 
-	tx, err := database.NewTransaction(ctx, false)
-	if err != nil {
-		log.Fatal(err)
-	}
+	articleRepo := repository.NewRepo(db)
+	uc := usecase.NewArticleUsecase(articleRepo, time.Second)
 
-	http.NewArticleHandler(e, articleUsecase.NewArticleUsecase(
-		repoArticle.New(tx),
-		repoAuthor.New(tx),
-		time.Second*2,
-	))
+	articleGroup := router.Group("article")
+	http.NewArticleHandler(articleGroup, uc)
 
-	log.Fatal(e.Start(viper.GetString("server.address"))) //nolint
+	log.Fatal(router.Start(viper.GetString("server.address")))
 }
