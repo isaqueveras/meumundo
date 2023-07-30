@@ -4,7 +4,6 @@ import (
 	"log"
 	"time"
 
-	_ "github.com/go-sql-driver/mysql"
 	"github.com/labstack/echo"
 	"github.com/spf13/viper"
 
