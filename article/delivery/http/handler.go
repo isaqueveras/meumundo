@@ -2,6 +2,7 @@ package http
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/labstack/echo"
 
@@ -15,15 +16,20 @@ type ArticleHandler struct {
 }
 
 // NewArticleHandler will initialize the articles/ resources endpoint
-func NewArticleHandler(e *echo.Echo, us domain.ArticleUsecase) {
+func NewArticleHandler(g *echo.Group, us domain.ArticleUsecase) {
 	handler := &ArticleHandler{ArticleUsecase: us}
 
-	e.GET("/get", handler.Get)
+	g.GET("/:uf/:slug", handler.Get)
 }
 
 func (a *ArticleHandler) Get(c echo.Context) error {
-	if err := a.ArticleUsecase.Get(c.Request().Context(), utils.Pointer(c.Param("article_id"))); err != nil {
+	uf := utils.Pointer(strings.ToLower(c.Param("uf")))
+	slug := utils.Pointer(strings.ToLower(c.Param("slug")))
+
+	article, err := a.ArticleUsecase.Get(c.Request().Context(), uf, slug)
+	if err != nil {
 		return c.JSON(http.StatusCreated, utils.ResponseError{Message: err.Error()})
 	}
-	return nil
+
+	return c.JSON(http.StatusOK, article)
 }

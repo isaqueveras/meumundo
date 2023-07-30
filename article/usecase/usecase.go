@@ -16,13 +16,13 @@ func NewArticleUsecase(a domain.IArticle, timeout time.Duration) domain.ArticleU
 	return &articleUsecase{articleRepo: a, contextTimeout: timeout}
 }
 
-func (a *articleUsecase) Get(ctx context.Context, articleID *string) error {
+func (a *articleUsecase) Get(ctx context.Context, uf, slug *string) (article *domain.Article, err error) {
 	ctx, cancel := context.WithTimeout(ctx, a.contextTimeout)
 	defer cancel()
 
-	if err := a.articleRepo.Get(ctx, articleID); err != nil {
-		return err
+	if article, err = a.articleRepo.Get(ctx, uf, slug); err != nil {
+		return nil, err
 	}
 
-	return nil
+	return
 }
