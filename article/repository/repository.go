@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"database/sql"
+
 	"nossobr/article/repository/postgres"
 	"nossobr/domain"
 )

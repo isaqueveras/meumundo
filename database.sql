@@ -1,24 +1,35 @@
 CREATE DATABASE IF NOT EXISTS "nossobr";
 USE "nossobr";
 
-CREATE TABLE t_estados (
+CREATE TABLE t_states (
 	id VARCHAR(8) PRIMARY KEY,
-  nome VARCHAR(50) NOT NULL,
-  sigla VARCHAR(2) NOT NULL
+  "name" VARCHAR(50) NOT NULL,
+  uf VARCHAR(2) NOT NULL
 );
 
-CREATE TABLE t_cidades (
+CREATE TABLE t_cities (
 	id VARCHAR(8) PRIMARY KEY,
-	estado_id VARCHAR(8) NOT NULL REFERENCES t_estados (id),
+	state_id VARCHAR(8) NOT NULL REFERENCES t_states (id),
   city VARCHAR(100) NOT NULL,
   slug VARCHAR(100) NOT NULL
 );
 
-CREATE TABLE t_artigos (
+CREATE TABLE t_article (
 	id VARCHAR(8) PRIMARY KEY,
-  conteudo TEXT,
-  info JSON NOT NULL,
-	cidade_id VARCHAR(8) NOT NULL REFERENCES t_cidades (id),
-	criacao TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-	atualizacao TIMESTAMPTZ
+  content TEXT,
+	city_id VARCHAR(8) NOT NULL REFERENCES t_cities (id),
+	created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+	updated_at TIMESTAMPTZ
+);
+
+CREATE TABLE t_people (
+	id VARCHAR(8) PRIMARY KEY,
+	city_id VARCHAR(8) NOT NULL REFERENCES t_cities (id),
+	"url" VARCHAR,
+	short_desc VARCHAR(100) NOT NULL,
+	biography TEXT,
+	date_birth DATE,
+	date_death DATE,
+	created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+	updated_at TIMESTAMPTZ
 );
