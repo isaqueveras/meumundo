@@ -4,19 +4,19 @@ import (
 	"context"
 	"time"
 
-	"nossobr/domain"
+	"nossobr/domain/article"
 )
 
 type articleUsecase struct {
-	articleRepo    domain.IArticle
+	articleRepo    article.IArticle
 	contextTimeout time.Duration
 }
 
-func NewArticleUsecase(a domain.IArticle, timeout time.Duration) domain.ArticleUsecase {
+func NewArticleUsecase(a article.IArticle, timeout time.Duration) article.ArticleUsecase {
 	return &articleUsecase{articleRepo: a, contextTimeout: timeout}
 }
 
-func (a *articleUsecase) Get(ctx context.Context, uf, slug *string) (article *domain.Article, err error) {
+func (a *articleUsecase) Get(ctx context.Context, uf, slug *string) (article *article.Article, err error) {
 	ctx, cancel := context.WithTimeout(ctx, a.contextTimeout)
 	defer cancel()
 

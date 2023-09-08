@@ -4,14 +4,14 @@ import (
 	"log"
 	"time"
 
+	"nossobr/database"
+	http "nossobr/delivery/http/article"
+	"nossobr/delivery/http/middleware"
+	"nossobr/repository/article"
+	"nossobr/usecase"
+
 	"github.com/labstack/echo"
 	"github.com/spf13/viper"
-
-	"nossobr/article/delivery/http"
-	"nossobr/article/delivery/http/middleware"
-	"nossobr/article/repository"
-	"nossobr/article/usecase"
-	"nossobr/database"
 )
 
 func init() {
@@ -37,7 +37,7 @@ func main() {
 	}
 	defer db.Close()
 
-	articleRepo := repository.NewRepo(db)
+	articleRepo := article.New(db)
 	uc := usecase.NewArticleUsecase(articleRepo, time.Second)
 
 	articleGroup := router.Group("article")

@@ -1,4 +1,4 @@
-package http
+package article
 
 import (
 	"net/http"
@@ -6,17 +6,17 @@ import (
 
 	"github.com/labstack/echo"
 
-	"nossobr/domain"
+	"nossobr/domain/article"
 	"nossobr/utils"
 )
 
 // ArticleHandler  represent the httphandler for article
 type ArticleHandler struct {
-	ArticleUsecase domain.ArticleUsecase
+	ArticleUsecase article.ArticleUsecase
 }
 
 // NewArticleHandler will initialize the articles/ resources endpoint
-func NewArticleHandler(g *echo.Group, us domain.ArticleUsecase) {
+func NewArticleHandler(g *echo.Group, us article.ArticleUsecase) {
 	handler := &ArticleHandler{ArticleUsecase: us}
 
 	g.GET("/:uf/:slug", handler.Get)
