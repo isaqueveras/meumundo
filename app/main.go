@@ -5,9 +5,9 @@ import (
 	"time"
 
 	"nossobr/database"
-	http "nossobr/delivery/http/article"
+	"nossobr/delivery/http"
 	"nossobr/delivery/http/middleware"
-	"nossobr/repository/article"
+	"nossobr/repository"
 	"nossobr/usecase"
 
 	"github.com/labstack/echo"
@@ -37,11 +37,11 @@ func main() {
 	}
 	defer db.Close()
 
-	articleRepo := article.New(db)
-	uc := usecase.NewArticleUsecase(articleRepo, time.Second)
+	repo := repository.New(db)
+	uc := usecase.NewUsecase(repo, time.Second)
 
-	articleGroup := router.Group("article")
-	http.NewArticleHandler(articleGroup, uc)
+	group := router.Group("v1")
+	http.NewHandler(group, uc)
 
 	log.Fatal(router.Start(viper.GetString("server.address")))
 }
