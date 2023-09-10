@@ -26,6 +26,7 @@ CREATE TABLE t_article (
 CREATE TABLE t_children (
 	id VARCHAR(8) PRIMARY KEY,
 	city_id VARCHAR(8) NOT NULL REFERENCES t_cities (id),
+	"name" VARCHAR(100) NOT NULL,
 	"url" VARCHAR,
 	short_desc VARCHAR(100) NOT NULL,
 	biography TEXT,
