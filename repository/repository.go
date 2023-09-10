@@ -35,3 +35,31 @@ func (r *repository) GetArticle(ctx context.Context, uf, slug *string) (*domain.
 func (r *repository) GetChildren(ctx context.Context, uf, slug *string) (*[]*domain.Children, error) {
 	return nil, nil
 }
+
+func (r *repository) GetBorderTowns(ctx context.Context, uf, slug *string) (*[][3]*string, error) {
+	query := `WITH towns AS (
+			SELECT unnest(TC.border_towns) AS cities
+			FROM public.t_cities TC 
+			JOIN public.t_states ts ON TS.id = TC.state_id 
+			WHERE TC.slug = $1 AND TS.uf = $2
+		) SELECT TC.slug, TC.city, TS.uf
+		FROM public.t_cities TC 
+		JOIN public.t_states TS ON TS.id = TC.state_id 
+		JOIN towns T ON TC.id = T.cities`
+
+	q, err := r.pg.QueryContext(ctx, query, slug, uf)
+	if err != nil {
+		return nil, err
+	}
+
+	resp := [][3]*string{}
+	for q.Next() {
+		var slug, city, uf *string
+		if err := q.Scan(&slug, &city, &uf); err != nil {
+			return nil, err
+		}
+		resp = append(resp, [3]*string{slug, city, uf})
+	}
+
+	return &resp, nil
+}

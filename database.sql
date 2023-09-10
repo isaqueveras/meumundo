@@ -11,7 +11,8 @@ CREATE TABLE t_cities (
 	id VARCHAR(8) PRIMARY KEY,
 	state_id VARCHAR(8) NOT NULL REFERENCES t_states (id),
   city VARCHAR(100) NOT NULL,
-  slug VARCHAR(100) NOT NULL
+  slug VARCHAR(100) NOT NULL,
+	border_towns TEXT[]
 );
 
 CREATE TABLE t_article (
@@ -22,7 +23,7 @@ CREATE TABLE t_article (
 	updated_at TIMESTAMPTZ
 );
 
-CREATE TABLE t_people (
+CREATE TABLE t_children (
 	id VARCHAR(8) PRIMARY KEY,
 	city_id VARCHAR(8) NOT NULL REFERENCES t_cities (id),
 	"url" VARCHAR,

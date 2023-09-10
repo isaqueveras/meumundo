@@ -37,3 +37,15 @@ func (a *usecase) GetChildren(ctx context.Context, uf, slug *string) (*[]*domain
 
 	return children, nil
 }
+
+func (a *usecase) GetBorderTowns(ctx context.Context, uf, slug *string) (*[][3]*string, error) {
+	ctx, cancel := context.WithTimeout(ctx, a.timeout)
+	defer cancel()
+
+	data, err := a.repo.GetBorderTowns(ctx, uf, slug)
+	if err != nil {
+		return nil, err
+	}
+
+	return data, nil
+}
