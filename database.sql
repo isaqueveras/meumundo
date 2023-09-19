@@ -1,6 +1,3 @@
-CREATE DATABASE IF NOT EXISTS "nossobr";
-USE "nossobr";
-
 CREATE TABLE t_states (
 	id VARCHAR(8) PRIMARY KEY,
   "name" VARCHAR(50) NOT NULL,
@@ -21,6 +18,14 @@ CREATE TABLE t_article (
 	city_id VARCHAR(8) NOT NULL REFERENCES t_cities (id),
 	created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 	updated_at TIMESTAMPTZ
+);
+
+CREATE TABLE t_article_props (
+	id VARCHAR(8) PRIMARY KEY,
+	article_id VARCHAR(8) NOT NULL REFERENCES t_article (id),
+	"name" VARCHAR(30) NOT NULL,
+	"value" VARCHAR(150) NOT NULL,
+	sortkey INTEGER NOT NULL
 );
 
 CREATE TABLE t_children (
