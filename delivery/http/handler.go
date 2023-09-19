@@ -20,7 +20,7 @@ func NewHandler(g *echo.Group, us domain.Usecase) {
 	handler := &handler{usecase: us}
 
 	g = g.Group("/:uf/:slug")
-	g.GET("/", handler.Get)
+	g.GET("", handler.Get)
 	g.GET("/children", handler.GetChildren)
 	g.GET("/border_towns", handler.GetBorderTowns)
 }

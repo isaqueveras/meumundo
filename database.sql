@@ -12,9 +12,12 @@ CREATE TABLE t_cities (
 	border_towns TEXT[]
 );
 
+CREATE TYPE article_status AS ENUM ('Draft', 'Pending', 'Private', 'Publish', 'Trash');
+
 CREATE TABLE t_article (
 	id VARCHAR(8) PRIMARY KEY,
   content TEXT,
+	"status" article_status DEFAULT 'Draft',
 	city_id VARCHAR(8) NOT NULL REFERENCES t_cities (id),
 	created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 	updated_at TIMESTAMPTZ
