@@ -43,3 +43,22 @@ CREATE TABLE t_children (
 	created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 	updated_at TIMESTAMPTZ
 );
+
+CREATE TYPE municipal_region_type AS ENUM ('Neighborhood', 'Village', 'District');
+
+CREATE TABLE t_municipal_regions (
+	id VARCHAR(8) PRIMARY KEY,
+	city_id VARCHAR(8) NOT NULL REFERENCES t_cities (id),
+	"name" VARCHAR(150) NOT NULL,
+	region municipal_region_type NOT NULL DEFAULT 'Neighborhood',
+	created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+	updated_at TIMESTAMPTZ
+);
+
+CREATE TABLE t_municipal_regions_props (
+	id VARCHAR(8) PRIMARY KEY,
+	municipal_regions_id VARCHAR(8) NOT NULL REFERENCES t_municipal_regions (id),
+	"name" VARCHAR(30) NOT NULL,
+	"value" VARCHAR(150) NOT NULL,
+	sortkey INTEGER NOT NULL
+);
