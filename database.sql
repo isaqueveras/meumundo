@@ -1,7 +1,9 @@
 CREATE TABLE t_states (
 	id VARCHAR(8) PRIMARY KEY,
   "name" VARCHAR(50) NOT NULL,
-  uf VARCHAR(2) NOT NULL
+  uf VARCHAR(2) NOT NULL,
+	latitude NUMERIC NOT NULL,
+	longitude NUMERIC NOT NULL
 );
 
 CREATE TABLE t_cities (
@@ -9,7 +11,9 @@ CREATE TABLE t_cities (
 	state_id VARCHAR(8) NOT NULL REFERENCES t_states (id),
   city VARCHAR(100) NOT NULL,
   slug VARCHAR(100) NOT NULL,
-	border_towns TEXT[]
+	border_towns TEXT[],
+	latitude NUMERIC NOT NULL,
+	longitude NUMERIC NOT NULL
 );
 
 CREATE TYPE article_status AS ENUM ('Draft', 'Pending', 'Private', 'Publish', 'Trash');
