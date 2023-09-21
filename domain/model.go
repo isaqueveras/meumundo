@@ -11,6 +11,8 @@ type Article struct {
 	Status      *string       `json:"status,omitempty"`
 	Props       *[]*Props     `json:"props,omitempty"`
 	BorderTowns *[][3]*string `json:"border_towns,omitempty"`
+	Latitude    *float64      `json:"latitude,omitempty"`
+	Longitude   *float64      `json:"longitude,omitempty"`
 	CreatedAt   *time.Time    `json:"created_at,omitempty"`
 	UpdatedAt   *time.Time    `json:"updated_at,omitempty"`
 }

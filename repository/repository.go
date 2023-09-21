@@ -18,14 +18,23 @@ func (r *repository) GetArticle(ctx context.Context, uf, slug *string) (*domain.
 	res := new(domain.Article)
 
 	query := `
-		SELECT TA.id, TA.content, TA.city_id, TA.created_at, TA.updated_at, TA.status
+		SELECT TA.id, TA.content, TA.city_id, TA.created_at, TA.updated_at, TA.status, TC.latitude, TC.longitude
 		FROM t_article TA
 		JOIN t_cities TC ON TC.id = TA.city_id
 		JOIN t_states TE ON TE.id = TC.state_id
 		WHERE TC.slug = $1 AND TE.uf = $2 AND TA.status = 'Publish'`
 
 	q := r.pg.QueryRowContext(ctx, query, slug, uf)
-	if err := q.Scan(&res.ID, &res.Content, &res.CityID, &res.CreatedAt, &res.UpdatedAt, &res.Status); err != nil {
+	if err := q.Scan(
+		&res.ID,
+		&res.Content,
+		&res.CityID,
+		&res.CreatedAt,
+		&res.UpdatedAt,
+		&res.Status,
+		&res.Latitude,
+		&res.Longitude,
+	); err != nil {
 		return nil, err
 	}
 
