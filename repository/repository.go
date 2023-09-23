@@ -68,7 +68,7 @@ func (r *repository) GetChildren(ctx context.Context, uf, slug *string) (*[]*dom
 
 func (r *repository) GetBorderTowns(ctx context.Context, uf, slug *string) (*[][3]*string, error) {
 	query := `WITH towns AS (
-			SELECT unnest(TC.border_towns) AS cities
+			SELECT unnest(TC.border_towns_id) AS cities
 			FROM public.t_cities TC 
 			JOIN public.t_states ts ON TS.id = TC.state_id 
 			WHERE TC.slug = $1 AND TS.uf = $2

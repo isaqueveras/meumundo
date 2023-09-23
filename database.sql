@@ -12,7 +12,7 @@ CREATE TABLE t_cities (
   city VARCHAR(100) NOT NULL,
   slug VARCHAR(100) NOT NULL,
 	abbreviation VARCHAR(4) NOT NULL,
-	border_towns TEXT[],
+	border_towns_id TEXT[],
 	latitude NUMERIC NOT NULL,
 	longitude NUMERIC NOT NULL
 );
