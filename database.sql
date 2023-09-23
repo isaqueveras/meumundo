@@ -71,7 +71,7 @@ CREATE TABLE t_municipal_regions_props (
 CREATE TABLE t_address (
 	id VARCHAR(8) PRIMARY KEY,
 	city_id VARCHAR(8) NOT NULL REFERENCES t_cities (id),
-	municipal_regions_id NOT NULL REFERENCES t_municipal_regions (id),
+	municipal_regions_id VARCHAR(8) NOT NULL REFERENCES t_municipal_regions (id),
 	"name" VARCHAR(150) NOT NULL,
 	"number" VARCHAR,
 	zip_code INTEGER,
