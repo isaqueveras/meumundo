@@ -11,6 +11,7 @@ CREATE TABLE t_cities (
 	state_id VARCHAR(8) NOT NULL REFERENCES t_states (id),
   city VARCHAR(100) NOT NULL,
   slug VARCHAR(100) NOT NULL,
+	abbreviation VARCHAR(4) NOT NULL,
 	border_towns TEXT[],
 	latitude NUMERIC NOT NULL,
 	longitude NUMERIC NOT NULL
@@ -65,4 +66,15 @@ CREATE TABLE t_municipal_regions_props (
 	"name" VARCHAR(30) NOT NULL,
 	"value" VARCHAR(150) NOT NULL,
 	sortkey INTEGER NOT NULL
+);
+
+CREATE TABLE t_address (
+	id VARCHAR(8) PRIMARY KEY,
+	city_id VARCHAR(8) NOT NULL REFERENCES t_cities (id),
+	municipal_regions_id NOT NULL REFERENCES t_municipal_regions (id),
+	"name" VARCHAR(150) NOT NULL,
+	"number" VARCHAR,
+	zip_code INTEGER,
+	latitude NUMERIC NOT NULL,
+	longitude NUMERIC NOT NULL
 );
