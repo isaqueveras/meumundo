@@ -4,17 +4,12 @@ import "time"
 
 // Article is representing the Article data struct
 type Article struct {
-	ID          *string       `json:"id,omitempty"`
-	CityID      *string       `json:"city_id,omitempty"`
-	Content     *string       `json:"content,omitempty"`
-	Children    *[]*Children  `json:"children,omitempty"`
-	Status      *string       `json:"status,omitempty"`
-	Props       *[]*Props     `json:"props,omitempty"`
-	BorderTowns *[][3]*string `json:"border_towns,omitempty"`
-	Latitude    *float64      `json:"latitude,omitempty"`
-	Longitude   *float64      `json:"longitude,omitempty"`
-	CreatedAt   *time.Time    `json:"created_at,omitempty"`
-	UpdatedAt   *time.Time    `json:"updated_at,omitempty"`
+	ID        *string    `json:"id,omitempty"`
+	Content   *string    `json:"content,omitempty"`
+	Status    *string    `json:"status,omitempty"`
+	Props     []*Props   `json:"props,omitempty"`
+	CreatedAt *time.Time `json:"created_at,omitempty"`
+	UpdatedAt *time.Time `json:"updated_at,omitempty"`
 }
 
 // Props represents the modeling of a property
@@ -35,3 +30,13 @@ type Children struct {
 	DateBirth   *string       `json:"date_birth,omitempty"`
 	DateDeath   *string       `json:"date_death,omitempty"`
 }
+
+// TODO: in dev.
+// type City struct {
+// 	ID          *string       `json:"id,omitempty"`
+// 	StateID     *string       `json:"state_id,omitempty"`
+// 	Name        *string       `json:"name,omitempty"`
+// 	BorderTowns *[][3]*string `json:"border_towns,omitempty"`
+// 	Latitude    *float64      `json:"latitude,omitempty"`
+// 	Longitude   *float64      `json:"longitude,omitempty"`
+// }

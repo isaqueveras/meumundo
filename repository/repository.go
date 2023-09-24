@@ -6,42 +6,41 @@ import (
 	"nossobr/domain"
 )
 
-type repository struct {
+type repo struct {
 	pg *sql.DB
 }
 
 func New(conn *sql.DB) domain.IBr {
-	return &repository{pg: conn}
+	return &repo{pg: conn}
 }
 
-func (r *repository) GetArticle(ctx context.Context, uf, slug *string) (*domain.Article, error) {
+func (r *repo) GetArticle(ctx context.Context, id *string) (*domain.Article, error) {
 	res := new(domain.Article)
 
-	query := `
-		SELECT TA.id, TA.content, TA.city_id, TA.created_at, TA.updated_at, TA.status, TC.latitude, TC.longitude
-		FROM t_article TA
-		JOIN t_cities TC ON TC.id = TA.city_id
-		JOIN t_states TE ON TE.id = TC.state_id
-		WHERE TC.slug = $1 AND TE.uf = $2 AND TA.status = 'Publish'`
-
-	q := r.pg.QueryRowContext(ctx, query, slug, uf)
-	if err := q.Scan(
-		&res.ID,
-		&res.Content,
-		&res.CityID,
-		&res.CreatedAt,
-		&res.UpdatedAt,
-		&res.Status,
-		&res.Latitude,
-		&res.Longitude,
-	); err != nil {
+	query := `SELECT content, status, created_at, updated_at FROM t_article TA WHERE id = $1 AND status = 'Publish'`
+	if err := r.pg.QueryRowContext(ctx, query, id).Scan(&res.Content, &res.Status, &res.CreatedAt, &res.UpdatedAt); err != nil {
 		return nil, err
 	}
+
+	rows, err := r.pg.QueryContext(ctx, `SELECT name, value FROM t_article_props WHERE article_id = $1 ORDER BY sortkey ASC`, id)
+	if err != nil {
+		return nil, err
+	}
+
+	for rows.Next() {
+		prop := &domain.Props{}
+		if err = rows.Scan(&prop.Name, &prop.Value); err != nil {
+			return nil, err
+		}
+		res.Props = append(res.Props, prop)
+	}
+
+	_ = rows.Close()
 
 	return res, nil
 }
 
-func (r *repository) GetChildren(ctx context.Context, uf, slug *string) (*[]*domain.Children, error) {
+func (r *repo) GetChildren(ctx context.Context, id *string) (*[]*domain.Children, error) {
 	query := `
 		SELECT TC2."name", TC2.url, TC2.short_desc
 		FROM public.t_cities TC
@@ -49,7 +48,7 @@ func (r *repository) GetChildren(ctx context.Context, uf, slug *string) (*[]*dom
 		JOIN public.t_children TC2 ON TC2.city_id = TC.id 
 		WHERE TC.slug = $1 AND TS.uf = $2`
 
-	q, err := r.pg.QueryContext(ctx, query, slug, uf)
+	q, err := r.pg.QueryContext(ctx, query, id)
 	if err != nil {
 		return nil, err
 	}
@@ -66,7 +65,7 @@ func (r *repository) GetChildren(ctx context.Context, uf, slug *string) (*[]*dom
 	return &resp, nil
 }
 
-func (r *repository) GetBorderTowns(ctx context.Context, uf, slug *string) (*[][3]*string, error) {
+func (r *repo) GetBorderTowns(ctx context.Context, id *string) (*[][3]*string, error) {
 	query := `WITH towns AS (
 			SELECT unnest(TC.border_towns_id) AS cities
 			FROM public.t_cities TC 
@@ -77,7 +76,7 @@ func (r *repository) GetBorderTowns(ctx context.Context, uf, slug *string) (*[][
 		JOIN public.t_states TS ON TS.id = TC.state_id 
 		JOIN towns T ON TC.id = T.cities`
 
-	q, err := r.pg.QueryContext(ctx, query, slug, uf)
+	q, err := r.pg.QueryContext(ctx, query, id)
 	if err != nil {
 		return nil, err
 	}

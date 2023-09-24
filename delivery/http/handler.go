@@ -2,7 +2,6 @@ package http
 
 import (
 	"net/http"
-	"strings"
 
 	"nossobr/domain"
 	"nossobr/utils"
@@ -19,16 +18,16 @@ type handler struct {
 func NewHandler(g *echo.Group, us domain.Usecase) {
 	handler := &handler{usecase: us}
 
-	g = g.Group("/:uf/:slug")
-	g.GET("", handler.Get)
-	g.GET("/children", handler.GetChildren)
-	g.GET("/border_towns", handler.GetBorderTowns)
+	article := g.Group("/article/:id")
+	article.GET("", handler.Get)
+
+	city := g.Group("/city/:id")
+	city.GET("/children", handler.GetChildren)
+	city.GET("/border_towns", handler.GetBorderTowns)
 }
 
 func (a *handler) Get(ctx echo.Context) error {
-	uf, slug := a.getParams(ctx)
-
-	article, err := a.usecase.GetArticle(ctx.Request().Context(), uf, slug)
+	article, err := a.usecase.GetArticle(ctx.Request().Context(), utils.Pointer(ctx.Param("id")))
 	if err != nil {
 		return ctx.JSON(http.StatusBadRequest, utils.ResponseError{Message: err.Error()})
 	}
@@ -37,9 +36,7 @@ func (a *handler) Get(ctx echo.Context) error {
 }
 
 func (a *handler) GetChildren(ctx echo.Context) error {
-	uf, slug := a.getParams(ctx)
-
-	children, err := a.usecase.GetChildren(ctx.Request().Context(), uf, slug)
+	children, err := a.usecase.GetChildren(ctx.Request().Context(), utils.Pointer(ctx.Param("id")))
 	if err != nil {
 		return ctx.JSON(http.StatusBadRequest, utils.ResponseError{Message: err.Error()})
 	}
@@ -48,16 +45,10 @@ func (a *handler) GetChildren(ctx echo.Context) error {
 }
 
 func (a *handler) GetBorderTowns(ctx echo.Context) error {
-	uf, slug := a.getParams(ctx)
-
-	res, err := a.usecase.GetBorderTowns(ctx.Request().Context(), uf, slug)
+	res, err := a.usecase.GetBorderTowns(ctx.Request().Context(), utils.Pointer(ctx.Param("id")))
 	if err != nil {
 		return ctx.JSON(http.StatusBadRequest, utils.ResponseError{Message: err.Error()})
 	}
 
 	return ctx.JSON(http.StatusOK, res)
-}
-
-func (a *handler) getParams(ctx echo.Context) (*string, *string) {
-	return utils.Pointer(strings.ToLower(ctx.Param("uf"))), utils.Pointer(strings.ToLower(ctx.Param("slug")))
 }
