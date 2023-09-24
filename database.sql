@@ -86,7 +86,7 @@ CREATE TABLE t_address (
 
 CREATE TABLE t_attractions (
 	id VARCHAR(8) PRIMARY KEY,
-	city_id VARCHAR(8) NOT NULL REFERENCES t_cities (id),
+	address_id VARCHAR(8) NOT NULL REFERENCES t_address (id),
  	article_id VARCHAR(8) REFERENCES t_article (id),
 	"name" VARCHAR NOT NULL,
 	"short_desc" VARCHAR(150) NOT NULL,
