@@ -11,6 +11,6 @@
     "port": "5432",
     "user": "postgres",
     "pass": "postgres",
-    "name": "nossobr"
+    "name": "meumundo"
   }
 }

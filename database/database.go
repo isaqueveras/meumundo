@@ -22,7 +22,7 @@ func OpenConnection() (*sql.DB, error) {
 		driverConfig   = stdlib.DriverConfig{
 			ConnConfig: pgx.ConnConfig{
 				RuntimeParams: map[string]string{
-					"application_name": "nossobr",
+					"application_name": "meumundo",
 					"DateStyle":        "ISO",
 					"IntervalStyle":    "iso_8601",
 					"search_path":      "public",

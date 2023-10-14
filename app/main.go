@@ -4,11 +4,11 @@ import (
 	"log"
 	"time"
 
-	"nossobr/database"
-	"nossobr/delivery/http"
-	"nossobr/delivery/http/middleware"
-	"nossobr/repository"
-	"nossobr/usecase"
+	"meumundo/database"
+	"meumundo/delivery/http"
+	"meumundo/delivery/http/middleware"
+	"meumundo/repository"
+	"meumundo/usecase"
 
 	"github.com/labstack/echo"
 	"github.com/spf13/viper"

@@ -1,5 +1,5 @@
-# nossobr
-O nossobr é um serviço que tem a funcionalidade de retornar dados referente a uma cidade ou estado do Brasil.
+# meumundo
+O meumundo é um serviço que tem a funcionalidade de retornar dados referente a uma cidade ou estado do Brasil.
 
 ---
 

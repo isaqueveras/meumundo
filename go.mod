@@ -1,4 +1,4 @@
-module nossobr
+module meumundo
 
 go 1.18
 

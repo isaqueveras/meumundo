@@ -1,27 +1,27 @@
 version: "3.8"
 
 services:
-  api:
-    image: nossobr
-    container_name: nossobr_api
-    ports:
-      - 9090:9090
-    depends_on:
-      postgesql:
-        condition: service_healthy
-    volumes:
-      - ./config.json:/app/config.json
+  # api:
+  #   image: meumundo
+  #   container_name: meumundo_api
+  #   ports:
+  #     - 9090:9090
+  #   depends_on:
+  #     postgesql:
+  #       condition: service_healthy
+  #   volumes:
+  #     - ./config.json:/app/config.json
 
   postgesql:
     image: 'postgres:14.1-alpine'
-    container_name: nossobr_postgesql
+    container_name: meumundo_postgesql
     ports:
       - "5432:5432"
     restart: always
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=nossobr
+      - POSTGRES_DB=meumundo
     volumes:
       - postgres_data:/data/postgres
 

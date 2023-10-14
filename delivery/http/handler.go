@@ -3,8 +3,8 @@ package http
 import (
 	"net/http"
 
-	"nossobr/domain"
-	"nossobr/utils"
+	"meumundo/domain"
+	"meumundo/utils"
 
 	"github.com/labstack/echo"
 )

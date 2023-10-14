@@ -2,7 +2,7 @@ package usecase
 
 import (
 	"context"
-	"nossobr/domain"
+	"meumundo/domain"
 	"time"
 )
 
