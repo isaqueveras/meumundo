@@ -7,8 +7,14 @@ import (
 	"meumundo/database"
 	"meumundo/delivery/http"
 	"meumundo/delivery/http/middleware"
-	"meumundo/repository"
-	"meumundo/usecase"
+
+	infraEstadual "meumundo/repository/estadual"
+	infraFederal "meumundo/repository/federal"
+	infraMunicipal "meumundo/repository/municipal"
+
+	ucEstadual "meumundo/usecase/estadual"
+	ucFederal "meumundo/usecase/federal"
+	ucMunicipal "meumundo/usecase/municipal"
 
 	"github.com/labstack/echo"
 	"github.com/spf13/viper"
@@ -37,8 +43,13 @@ func main() {
 	}
 	defer db.Close()
 
-	repo := repository.New(db)
-	uc := usecase.NewUsecase(repo, time.Second)
+	repoMunicipal := infraMunicipal.New(db)
+	repoEstadual := infraEstadual.New(db)
+	repoFederal := infraFederal.New(db)
+
+	usecaseMunicipal := ucEstadual.NewUsecase(repoMunicipal, time.Second)
+	usecaseEstadual := ucMunicipal.NewUsecase(repoEstadual, time.Second)
+	usecaseFederal := ucFederal.NewUsecase(repoFederal, time.Second)
 
 	group := router.Group("v1")
 	http.NewHandler(group, uc)
