@@ -2,19 +2,18 @@ package main
 
 import (
 	"log"
-	"time"
-
 	"meumundo/database"
-	"meumundo/delivery/http"
+	"meumundo/delivery/http/estadual"
+	"meumundo/delivery/http/federal"
 	"meumundo/delivery/http/middleware"
-
+	"meumundo/delivery/http/municipal"
 	infraEstadual "meumundo/repository/estadual"
 	infraFederal "meumundo/repository/federal"
 	infraMunicipal "meumundo/repository/municipal"
-
 	ucEstadual "meumundo/usecase/estadual"
 	ucFederal "meumundo/usecase/federal"
 	ucMunicipal "meumundo/usecase/municipal"
+	"time"
 
 	"github.com/labstack/echo"
 	"github.com/spf13/viper"
@@ -43,16 +42,11 @@ func main() {
 	}
 	defer db.Close()
 
-	repoMunicipal := infraMunicipal.New(db)
-	repoEstadual := infraEstadual.New(db)
-	repoFederal := infraFederal.New(db)
-
-	usecaseMunicipal := ucEstadual.NewUsecase(repoMunicipal, time.Second)
-	usecaseEstadual := ucMunicipal.NewUsecase(repoEstadual, time.Second)
-	usecaseFederal := ucFederal.NewUsecase(repoFederal, time.Second)
-
 	group := router.Group("v1")
-	http.NewHandler(group, uc)
+
+	municipal.NewHandler(group, ucMunicipal.NewUsecase(infraEstadual.New(db), time.Second*2))
+	estadual.NewHandler(group, ucEstadual.NewUsecase(infraMunicipal.New(db), time.Second*2))
+	federal.NewHandler(group, ucFederal.NewUsecase(infraFederal.New(db), time.Second*2))
 
 	log.Fatal(router.Start(viper.GetString("server.address")))
 }
